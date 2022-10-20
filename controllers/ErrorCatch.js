@@ -18,7 +18,7 @@ module.exports.errorCatch = (res, err) => {
   if (isValidError) {
     res.status(isValidError[2]).send({ message: `Произошла ${isValidError[1]}` });
   } else {
-    console.dir(nameError);
-    res.send({ message: 'А эту ошибку я не знаю' });
+    // console.dir(nameError);
+    res.status(500).send({ message: `А эту ошибку ${nameError} я не знаю` });
   }
 };
