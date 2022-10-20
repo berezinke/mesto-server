@@ -1,23 +1,25 @@
 module.exports = {
-  extends: 'airbnb-base',
-  plugins: ['react'],
-  rules: { underscore: 0 },
-};
-
-/*
-'env': {
+  "env": {
     "browser": true,
     "es2021": true
-  },
-  "extends": "airbnb-base",
+    },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "airbnb-base"
+  ],
   "overrides": [
   ],
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": "latest"
+    "ecmaVersion": "latest",
+    "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "react",
+    "@typescript-eslint"
   ],
   "rules": {
+    underscore: 0
   }
-*/
+}
