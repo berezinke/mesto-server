@@ -1,6 +1,6 @@
 module.exports.errorCatch = (res, err) => {
   const arrNameErrores = [
-    ['ValidationError', 'ошибка валидации'],
+    ['ValidationError', 'ошибка валидации', 400],
   ];
   const nameError = err.name;
 
@@ -16,7 +16,7 @@ module.exports.errorCatch = (res, err) => {
   const isValidError = arrNameErrores.find(isInArray);
 
   if (isValidError) {
-    res.send({ message: `Произошла ${isValidError[1]}` });
+    res.status(isValidError[2]).send({ message: `Произошла ${isValidError[1]}` });
   } else {
     console.dir(nameError);
     res.send({ message: 'А эту ошибку я не знаю' });
