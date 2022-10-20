@@ -43,8 +43,12 @@ module.exports.updateUser = (req, res) => {
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  // eslint-disable-next-line no-underscore-dangle
-  User.findByIdAndUpdate(req.user._id, { avatar })
+  User.findByIdAndUpdate(
+    // eslint-disable-next-line no-underscore-dangle
+    req.user._id,
+    { avatar },
+    { new: true, runValidators: true, upsert: true },
+  )
     .then((user) => res.send({ data: user }))
     .catch((err) => errorCatch.errorCatch(res, err));
 };
