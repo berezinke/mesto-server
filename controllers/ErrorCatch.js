@@ -17,9 +17,9 @@ module.exports.errorCatch = (res, err) => {
 
   if (isValidError) {
     // console.dir(nameError);
-    res.status(400).send({ message: 'ошибка валидации' });
+    // res.status(400).send({ message: 'ошибка валидации' });
     // res.status(400).send({ message: `Произошла ${isValidError[1]}` });
-    // res.status(isValidError[2]).send({ message: `Произошла ${isValidError[1]}` });
+    res.status(isValidError[2]).send({ message: `Произ!ошла ${isValidError[1]}` });
   } else {
     // console.dir(nameError);
     res.status(500).send({ message: `А эту ошибку ${nameError} программа пока не знает` });
