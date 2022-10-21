@@ -18,7 +18,7 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findByIdAndRemove(req.params.cardId).orFail()
     .then((card) => res.send({ data: card }))
     .catch((err) => errorCatch.errorCatch(res, err));
 };
@@ -30,7 +30,7 @@ module.exports.putCardLike = (req, res) => {
     owner,
     { $addToSet: { likes: owner } }, // добавить _id в массив, если его там нет
     { new: true },
-  )
+  ).orFail()
     .then((card) => res.send({ data: card }))
     .catch((err) => errorCatch.errorCatch(res, err));
 };
@@ -42,7 +42,7 @@ module.exports.deleteCardLike = (req, res) => {
     owner,
     { $pull: { likes: owner } }, // убрать _id из массива
     { new: true },
-  )
+  ).orFail()
     .then((card) => res.send({ data: card }))
     .catch((err) => errorCatch.errorCatch(res, err));
 };

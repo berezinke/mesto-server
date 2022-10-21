@@ -15,7 +15,8 @@ module.exports.getMyUser = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  User.findById(req.params.id)
+  console.dir(req.params.id);
+  User.findById(req.params.id).orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => errorCatch.errorCatch(res, err));
 };
@@ -36,7 +37,7 @@ module.exports.updateUser = (req, res) => {
     req.user._id,
     { name, about },
     { new: true, runValidators: true, upsert: true }, // Обн рез, валидация, создание если не найден
-  )
+  ).orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => errorCatch.errorCatch(res, err));
 };
@@ -48,7 +49,7 @@ module.exports.updateAvatar = (req, res) => {
     req.user._id,
     { avatar },
     { new: true, runValidators: true, upsert: true },
-  )
+  ).orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => errorCatch.errorCatch(res, err));
 };
