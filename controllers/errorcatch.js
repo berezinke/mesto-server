@@ -22,7 +22,7 @@ module.exports.errorCatch = (res, err) => {
   } else {
     console.dir(nameError);
     console.dir(err);
-    res.status(500).send({ message: `А эту ошибку ${nameError} программа пока не знает` });
+    res.status(500).send({ message: `А эту ошибку ${nameError} выдал сервер` });
   }
 };
 
