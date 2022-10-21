@@ -25,3 +25,7 @@ module.exports.errorCatch = (res, err) => {
     res.status(500).send({ message: `А эту ошибку ${nameError} программа пока не знает` });
   }
 };
+
+module.exports.errorPath = (req, res) => {
+  res.status(404).send({ message: 'Такого пути программа пока не знает' });
+};

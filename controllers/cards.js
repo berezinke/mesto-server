@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 
-const errorCatch = require('./ErrorCatch');
+const errorCatch = require('./errorcatch');
 
 module.exports.getAllCards = (req, res) => {
   Card.find({})
@@ -18,7 +18,7 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId).orFail()
+  Card.findByIdAndRemove(req.params.id).orFail()
     .then((card) => res.send({ data: card }))
     .catch((err) => errorCatch.errorCatch(res, err));
 };
@@ -27,7 +27,7 @@ module.exports.putCardLike = (req, res) => {
   // eslint-disable-next-line no-underscore-dangle
   const owner = req.user._id;
   Card.findByIdAndUpdate(
-    owner,
+    req.params.id,
     { $addToSet: { likes: owner } }, // добавить _id в массив, если его там нет
     { new: true },
   ).orFail()
@@ -39,7 +39,7 @@ module.exports.deleteCardLike = (req, res) => {
   // eslint-disable-next-line no-underscore-dangle
   const owner = req.user._id;
   Card.findByIdAndUpdate(
-    owner,
+    req.params.id,
     { $pull: { likes: owner } }, // убрать _id из массива
     { new: true },
   ).orFail()

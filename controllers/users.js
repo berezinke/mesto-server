@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const errorCatch = require('./ErrorCatch');
+const errorCatch = require('./errorcatch');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -15,7 +15,6 @@ module.exports.getMyUser = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  console.dir(req.params.id);
   User.findById(req.params.id).orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => errorCatch.errorCatch(res, err));
