@@ -5,9 +5,9 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const { PORT = 3000 } = process.env;
-// process.on('uncaughtException', (err, origin) => {
-// console.dir(`${origin} ${err.name} c текстом ${err.message} не была обработана. Внимание!`);
-//  });
+process.on('uncaughtException', (err, origin) => {
+  console.dir(`${origin} ${err.name} c текстом ${err.message} не была обработана. Внимание!`);
+});
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {});
 
