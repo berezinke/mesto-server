@@ -13,6 +13,7 @@
     "sourceType": "module"
   },
   "rules": {
-    "underscore": 0
+    "underscore": 0,
+    "error": {"allow":["_id"]}
   }
 }
