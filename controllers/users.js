@@ -21,7 +21,7 @@ module.exports.getUserById = (req, res) => {
       } else if (err.name === 'DocumentNotFoundError') {
         res.status(404).send({ message: `${err.name} Таких данных в базе нет` });
       } else {
-        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер!!!` });
       }
     });
 };
