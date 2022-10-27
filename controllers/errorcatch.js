@@ -1,4 +1,8 @@
-module.exports.errorCatch = (res, err) => {
+module.exports.errorPath = (req, res) => {
+  res.status(404).send({ message: 'Такого пути программа пока не знает' });
+};
+
+/*  module.exports.errorCatch = (res, err) => {
   const arrNameErrores = [
     ['ValidationError', 'ошибка валидации', 400],
     ['CastError', 'ошибка поиска. Инфа не найдена', 400],
@@ -24,8 +28,4 @@ module.exports.errorCatch = (res, err) => {
     console.dir(err);
     res.status(500).send({ message: `А эту ошибку ${nameError} выдал сервер` });
   }
-};
-
-module.exports.errorPath = (req, res) => {
-  res.status(404).send({ message: 'Такого пути программа пока не знает' });
-};
+};  */

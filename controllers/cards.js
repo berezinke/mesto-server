@@ -1,11 +1,12 @@
 const Card = require('../models/card');
 
-const errorCatch = require('./errorcatch');
-
 module.exports.getAllCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => errorCatch.errorCatch(res, err));
+    .catch((err) => {
+      // errorCatch.errorCatch(res, err);
+      res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+    });
 };
 
 module.exports.createCard = (req, res) => {
@@ -14,13 +15,29 @@ module.exports.createCard = (req, res) => {
   const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((card) => res.send({ data: card }))
-    .catch((err) => errorCatch.errorCatch(res, err));
+    .catch((err) => {
+      // errorCatch.errorCatch(res, err);
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
+      } else {
+        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+      }
+    });
 };
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id).orFail()
     .then((card) => res.send({ data: card }))
-    .catch((err) => errorCatch.errorCatch(res, err));
+    .catch((err) => {
+      // errorCatch.errorCatch(res, err);
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: `${err.name} Невалидные данные` });
+      } else {
+        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+      }
+    });
 };
 
 module.exports.putCardLike = (req, res) => {
@@ -32,7 +49,16 @@ module.exports.putCardLike = (req, res) => {
     { new: true },
   ).orFail()
     .then((card) => res.send({ data: card }))
-    .catch((err) => errorCatch.errorCatch(res, err));
+    .catch((err) => {
+      // errorCatch.errorCatch(res, err);
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: `${err.name} Невалидные данные` });
+      } else {
+        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+      }
+    });
 };
 
 module.exports.deleteCardLike = (req, res) => {
@@ -44,5 +70,16 @@ module.exports.deleteCardLike = (req, res) => {
     { new: true },
   ).orFail()
     .then((card) => res.send({ data: card }))
-    .catch((err) => errorCatch.errorCatch(res, err));
+    .catch((err) => {
+      // errorCatch.errorCatch(res, err);
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: `${err.name} Невалидные данные` });
+      } else {
+        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+      }
+    });
 };
+
+// const errorCatch = require('./errorcatch');

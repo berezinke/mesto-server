@@ -1,23 +1,27 @@
 const User = require('../models/user');
-const errorCatch = require('./errorcatch');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => errorCatch.errorCatch(res, err));
-};
-
-module.exports.getMyUser = (req, res) => {
-  // eslint-disable-next-line no-underscore-dangle
-  User.findById(req.user._id)
-    .then((users) => res.send({ data: users }))
-    .catch((err) => errorCatch.errorCatch(res, err));
+    .catch((err) => {
+      // errorCatch.errorCatch(res, err);
+      res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+    });
 };
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.id).orFail()
     .then((user) => res.send({ data: user }))
-    .catch((err) => errorCatch.errorCatch(res, err));
+    .catch((err) => {
+      // errorCatch.errorCatch(res, err);
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: `${err.name} Невалидные данные` });
+      } else {
+        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+      }
+    });
 };
 
 module.exports.createUser = (req, res) => {
@@ -26,7 +30,14 @@ module.exports.createUser = (req, res) => {
     .then((user) => {
       res.send({ data: user });
     })
-    .catch((err) => errorCatch.errorCatch(res, err));
+    .catch((err) => {
+      // errorCatch.errorCatch(res, err);
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
+      } else {
+        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+      }
+    });
 };
 
 module.exports.updateUser = (req, res) => {
@@ -35,10 +46,19 @@ module.exports.updateUser = (req, res) => {
     // eslint-disable-next-line no-underscore-dangle
     req.user._id,
     { name, about },
-    { new: true, runValidators: true, upsert: true }, // Обн рез, валидация, создание если не найден
+    { new: true, runValidators: true }, // Обн рез, валидация, создание если не найден
   ).orFail()
     .then((user) => res.send({ data: user }))
-    .catch((err) => errorCatch.errorCatch(res, err));
+    .catch((err) => {
+      // errorCatch.errorCatch(res, err);
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: `${err.name} Невалидные данные` });
+      } else {
+        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+      }
+    });
 };
 
 module.exports.updateAvatar = (req, res) => {
@@ -47,10 +67,20 @@ module.exports.updateAvatar = (req, res) => {
     // eslint-disable-next-line no-underscore-dangle
     req.user._id,
     { avatar },
-    { new: true, runValidators: true, upsert: true },
+    { new: true, runValidators: true },
   ).orFail()
     .then((user) => res.send({ data: user }))
-    .catch((err) => errorCatch.errorCatch(res, err));
+    .catch((err) => {
+      // errorCatch.errorCatch(res, err);
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: `${err.name} Невалидные данные` });
+      } else {
+        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+      }
+    });
 };
 
 // "63513d264f6d342876316049"
+// const errorCatch = require('./errorcatch');

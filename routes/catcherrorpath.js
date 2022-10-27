@@ -4,7 +4,6 @@ const {
   errorPath,
 } = require('../controllers/errorcatch');
 
-router.get('/*', errorPath);
-router.patch('/*', errorPath);
+router.all('/*', errorPath);
 
 module.exports = router;
