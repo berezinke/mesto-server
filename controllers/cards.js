@@ -14,7 +14,9 @@ module.exports.createCard = (req, res) => {
   // eslint-disable-next-line no-underscore-dangle
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      res.send({ data: card });
+    })
     .catch((err) => {
       // errorCatch.errorCatch(res, err);
       if (err.name === 'ValidationError') {
