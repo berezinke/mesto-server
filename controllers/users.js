@@ -14,12 +14,10 @@ module.exports.getUserById = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       // errorCatch.errorCatch(res, err);
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: `${err.name} Невалидные данные` });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Невалидные данные' });
       } else if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: `${err.name} Таких данных в базе нет` });
+        res.status(404).send({ message: 'Таких данных в базе нет' });
       } else {
         res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер!!!` });
       }
@@ -35,7 +33,7 @@ module.exports.createUser = (req, res) => {
     .catch((err) => {
       // errorCatch.errorCatch(res, err);
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
+        res.status(400).send({ message: 'Ошибка валидации' });
       } else {
         res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
       }
@@ -54,9 +52,9 @@ module.exports.updateUser = (req, res) => {
     .catch((err) => {
       // errorCatch.errorCatch(res, err);
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
+        res.status(400).send({ message: 'Ошибка валидации' });
       } else if (err.name === 'CastError') {
-        res.status(400).send({ message: `${err.name} Невалидные данные` });
+        res.status(400).send({ message: 'Невалидные данные' });
       } else {
         res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
       }
@@ -75,9 +73,9 @@ module.exports.updateAvatar = (req, res) => {
     .catch((err) => {
       // errorCatch.errorCatch(res, err);
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: `Ошибка ${err.name} валидации` });
+        res.status(400).send({ message: 'Ошибка валидации' });
       } else if (err.name === 'CastError') {
-        res.status(400).send({ message: `${err.name} Невалидные данные` });
+        res.status(400).send({ message: 'Невалидные данные' });
       } else {
         res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
       }
