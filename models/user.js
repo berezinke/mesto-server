@@ -8,6 +8,7 @@ function validationEmail(val) {
 }
 
 function validationUrl(val) {
+  console.dir('1');
   return outValidator.isURL(val);
 }
 
@@ -29,6 +30,7 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     default: 'Жак-Ив Кусто',
+    minlength: 2,
     maxlength: 30,
   },
   about: {

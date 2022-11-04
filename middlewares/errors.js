@@ -1,9 +1,11 @@
 module.exports.catchErrores = (err, req, res, next) => {
   if (err.statusCode) {
-    res.status(err.statusCode).send({ message: err.message });
+    console.dir(err);
+    res.status(err.statusCode).send({ message: `err.message ${err.statusCode}` });
   } else {
     console.dir(err);
-    res.status(500).send({ message: 'Внутренняя ошибка сервера' });
+    console.dir(err.statusCode);
+    res.status(500).send({ message: 'Внутренняя ошибка сервера!!!' });
   }
   next(); // пропускаем запрос дальше
 };
