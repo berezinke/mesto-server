@@ -1,46 +1,49 @@
+// const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const NotValidError = require('../errores/errornotvalid');
+const NotFoundError = require('../errores/errornotfound');
+const ServerError = require('../errores/errorserver');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send({ data: users }))
-    .catch((err) => {
-      // errorCatch.errorCatch(res, err);
-      res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
-    });
-};
-
-module.exports.getUserById = (req, res) => {
-  User.findById(req.params.id).orFail()
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      // errorCatch.errorCatch(res, err);
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Невалидные данные' });
-      } else if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'Таких данных в базе нет' });
-      } else {
-        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер!!!` });
+    .then((users) => {
+      if (!users) {
+        throw new ServerError('Ошибка сервера');
       }
+      res.send({ data: users });
+    })
+    .catch((err) => {
+      next(err);
     });
 };
 
-module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+module.exports.getUserById = (req, res, next) => {
+  User.findById(req.params.id).orFail()
     .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Таких данных в базе нет');
+      }
       res.send({ data: user });
     })
     .catch((err) => {
-      // errorCatch.errorCatch(res, err);
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка валидации' });
-      } else {
-        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
-      }
+      next(err);
     });
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.getOwner = (req, res, next) => {
+  User.findById(req.user._id).orFail()
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Таких данных в базе нет');
+      }
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     // eslint-disable-next-line no-underscore-dangle
@@ -48,20 +51,18 @@ module.exports.updateUser = (req, res) => {
     { name, about },
     { new: true, runValidators: true }, // Обн рез, валидация, создание если не найден
   ).orFail()
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      // errorCatch.errorCatch(res, err);
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка валидации' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Невалидные данные' });
-      } else {
-        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+    .then((user) => {
+      if (!user) {
+        throw new NotValidError('Невалидные данные');
       }
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      next(err);
     });
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     // eslint-disable-next-line no-underscore-dangle
@@ -69,18 +70,13 @@ module.exports.updateAvatar = (req, res) => {
     { avatar },
     { new: true, runValidators: true },
   ).orFail()
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      // errorCatch.errorCatch(res, err);
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка валидации' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Невалидные данные' });
-      } else {
-        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+    .then((user) => {
+      if (!user) {
+        throw new NotValidError('Невалидные данные');
       }
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      next(err);
     });
 };
-
-// "63513d264f6d342876316049"
-// const errorCatch = require('./errorcatch');

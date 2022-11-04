@@ -1,50 +1,54 @@
 const Card = require('../models/card');
+const NotValidError = require('../errores/errornotvalid');
+const ServerError = require('../errores/errorserver');
 
-module.exports.getAllCards = (req, res) => {
+module.exports.getAllCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => {
+      if (!cards) {
+        throw new ServerError('Ошибка сервера');
+      }
+      res.send({ data: cards });
+    })
     .catch((err) => {
-      // errorCatch.errorCatch(res, err);
-      res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+      next(err);
     });
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   // eslint-disable-next-line no-underscore-dangle
   const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((card) => {
+      if (!card) {
+        throw new NotValidError('Невалидные данные');
+      }
       res.send({ data: card });
     })
     .catch((err) => {
-      // errorCatch.errorCatch(res, err);
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка валидации' });
-      } else {
-        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
-      }
+      next(err);
     });
 };
 
-module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.id).orFail()
-    .then((card) => res.send({ data: card }))
+module.exports.deleteCard = (req, res, next) => {
+  Card.findById(req.params.id).orFail()
+    .then((card) => {
+      if (card.owner.toString() === req.user._id) {
+        Card.findByIdAndRemove(req.params.id).orFail()
+          .then(() => {
+            res.send({ message: 'Удаление удалось!' });
+          });
+      } else {
+        throw new NotValidError('Нет прав на удаление');
+      }
+    })
     .catch((err) => {
-      // errorCatch.errorCatch(res, err);
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка валидации' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Невалидные данные' });
-      } else if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'Таких данных в базе нет' });
-      } else {
-        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
-      }
+      next(err);
     });
 };
 
-module.exports.putCardLike = (req, res) => {
+module.exports.putCardLike = (req, res, next) => {
   // eslint-disable-next-line no-underscore-dangle
   const owner = req.user._id;
   Card.findByIdAndUpdate(
@@ -52,22 +56,18 @@ module.exports.putCardLike = (req, res) => {
     { $addToSet: { likes: owner } }, // добавить _id в массив, если его там нет
     { new: true },
   ).orFail()
-    .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      // errorCatch.errorCatch(res, err);
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка валидации' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Невалидные данные' });
-      } else if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'Таких данных в базе нет' });
-      } else {
-        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+    .then((card) => {
+      if (!card) {
+        throw new NotValidError('Не лайкнулось');
       }
+      res.send({ data: card });
+    })
+    .catch((err) => {
+      next(err);
     });
 };
 
-module.exports.deleteCardLike = (req, res) => {
+module.exports.deleteCardLike = (req, res, next) => {
   // eslint-disable-next-line no-underscore-dangle
   const owner = req.user._id;
   Card.findByIdAndUpdate(
@@ -75,16 +75,14 @@ module.exports.deleteCardLike = (req, res) => {
     { $pull: { likes: owner } }, // убрать _id из массива
     { new: true },
   ).orFail()
-    .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      // errorCatch.errorCatch(res, err);
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Невалидные данные' });
-      } else if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'Таких данных в базе нет' });
-      } else {
-        res.status(500).send({ message: `А эту ошибку ${err.name} выдал сервер` });
+    .then((card) => {
+      if (!card) {
+        throw new NotValidError('Не лайкнулось');
       }
+      res.send({ data: card });
+    })
+    .catch((err) => {
+      next(err);
     });
 };
 

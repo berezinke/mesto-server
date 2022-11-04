@@ -27,8 +27,3 @@ const cardSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('card', cardSchema);
-
-// type: mongoose.Schema.Types.ObjectId,
-//  ref: 'user',
-// type: mongoose.Schema.Types.ObjectId,
-//    ref: 'user',

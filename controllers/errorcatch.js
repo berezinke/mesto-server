@@ -1,5 +1,7 @@
-module.exports.errorPath = (req, res) => {
-  res.status(404).send({ message: 'Такого пути программа пока не знает' });
+const NotFoundError = require('../errores/errornotfound');
+
+module.exports.errorPath = () => {
+  throw new NotFoundError('Такого пути программа пока не знает');
 };
 
 /*  module.exports.errorCatch = (res, err) => {
