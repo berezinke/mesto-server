@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const NotValidError = require('../errores/errornotvalid');
+const NotLoginError = require('../errores/errornotlogin');
+const NotAllowedError = require('../errores/errornotallowed');
 const ServerError = require('../errores/errorserver');
 
 module.exports.createUser = (req, res, next) => {
@@ -11,18 +12,20 @@ module.exports.createUser = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        throw new NotValidError('Такой пользователь уже есть!');
+        throw new NotAllowedError('Такой пользователь уже есть!');
       }
     });
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       email, password: hash, name, about, avatar,
     })
-      .then((user) => {
-        if (!user) {
+      .then(({ _id }) => {
+        if (!_id) {
           throw new ServerError('Ошибка сервера');
         }
-        res.send({ data: user });
+        res.send({
+          email, name, about, avatar, _id,
+        });
       }))
     .catch((err) => {
       next(err);
@@ -35,7 +38,7 @@ module.exports.login = (req, res, next) => {
   User.findUserByParams(email, password)
     .then((user) => {
       if (!user) {
-        throw new NotValidError('Неправильное имя пользователя или пароль');
+        throw new NotLoginError('Неправильное имя пользователя или пароль');
       }
       const token = jwt.sign({ _id: user._id }, 'simpleKey', { expiresIn: '17d' });
       // console.dir(token);
