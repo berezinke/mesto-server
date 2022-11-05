@@ -7,16 +7,16 @@ function validationEmail(val) {
   return outValidator.isEmail(val);
 }
 
-function validationUrl(val) {
-  console.dir('1');
+/* function validationUrl(val) {
+  console.dir('111');
   return outValidator.isURL(val);
-}
+} */
 
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
+    // unique: true,
     default: 'kusto@gmail.com',
     validate: validationEmail,
   },
@@ -41,7 +41,6 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    validate: validationUrl,
   },
 });
 

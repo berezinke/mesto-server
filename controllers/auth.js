@@ -9,24 +9,26 @@ module.exports.createUser = (req, res, next) => {
   const {
     email, password, name, about, avatar,
   } = req.body;
-  User.findOne({ email })
+  User.findOne({ email }).orFail()
     .then((user) => {
       if (user) {
-        throw new NotAllowedError('Такой пользователь уже есть!');
+        throw new NotAllowedError('Такой пользователь уже есть!!!');
       }
-    });
-  bcrypt.hash(password, 10)
-    .then((hash) => User.create({
-      email, password: hash, name, about, avatar,
     })
-      .then(({ _id }) => {
-        if (!_id) {
-          throw new ServerError('Ошибка сервера');
-        }
-        res.send({
-          email, name, about, avatar, _id,
-        });
-      }))
+    .then(() => {
+      bcrypt.hash(password, 10)
+        .then((hash) => User.create({
+          email, password: hash, name, about, avatar,
+        })
+          .then(({ _id }) => {
+            if (!_id) {
+              throw new ServerError('Ошибка сервера');
+            }
+            res.send({
+              email, name, about, avatar, _id,
+            });
+          }));
+    })
     .catch((err) => {
       next(err);
     });
