@@ -9,18 +9,24 @@ module.exports.createUser = (req, res, next) => {
   const {
     email, password, name, about, avatar,
   } = req.body;
-  User.findOne({ email }).orFail()
+
+  console.dir('-1');
+  console.dir(email);
+  User.findOne({ email })
     .then((user) => {
       if (user) {
         throw new NotAllowedError('Такой пользователь уже есть!!!');
       }
+      console.dir('0');
     })
     .then(() => {
+      console.dir('1');
       bcrypt.hash(password, 10)
         .then((hash) => User.create({
           email, password: hash, name, about, avatar,
         })
           .then(({ _id }) => {
+            console.dir('2');
             if (!_id) {
               throw new ServerError('Ошибка сервера');
             }
@@ -30,8 +36,11 @@ module.exports.createUser = (req, res, next) => {
           }));
     })
     .catch((err) => {
+      console.dir('5');
+      console.dir(err);
       next(err);
     });
+  console.dir('4');
 };
 
 module.exports.login = (req, res, next) => {

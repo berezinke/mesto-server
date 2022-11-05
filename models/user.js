@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const outValidator = require('validator');
-const NotValidError = require('../errores/errornotvalid');
+const NotLoginError = require('../errores/errornotlogin');
 
 function validationEmail(val) {
   return outValidator.isEmail(val);
@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    // unique: true,
+    unique: true,
     default: 'kusto@gmail.com',
     validate: validationEmail,
   },
@@ -48,12 +48,12 @@ userSchema.statics.findUserByParams = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new NotValidError('Неправильное имя пользователя или пароль');
+        throw new NotLoginError('Неправильное имя пользователя или пароль');
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            throw new NotValidError('Неправильное имя пользователя или пароль');
+            throw new NotLoginError('Неправильное имя пользователя или пароль');
           }
           return user;
         });
