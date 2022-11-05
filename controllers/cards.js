@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const IncorrrectUserError = require('../errores/errorincorrectuser');
 const NotValidError = require('../errores/errornotvalid');
 const ServerError = require('../errores/errorserver');
 
@@ -40,7 +41,7 @@ module.exports.deleteCard = (req, res, next) => {
             res.send({ message: 'Удаление удалось!' });
           });
       } else {
-        throw new NotValidError('Нет прав на удаление');
+        throw new IncorrrectUserError('Нет прав на удаление');
       }
     })
     .catch((err) => {

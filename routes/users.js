@@ -5,13 +5,17 @@ const {
   getUsers, getUserById, updateUser, updateAvatar, getOwner,
 } = require('../controllers/users');
 
+const validMongoId = /^[0-9A-F]+/i;
+// eslint-disable-next-line no-useless-escape
+const validUrl = /(https?:\/\/[a-z0-9_\-\.]+[a-z]{2,9})(\/[a-z0-9_\-\.])*?/i;
+
 router.get('/', getUsers);
 
 router.get('/me', getOwner);
 
 router.get('/:id', celebrate({
   params: Joi.object().keys({
-    id: Joi.string(),
+    id: Joi.string().pattern(validMongoId).min(24).max(24),
   }),
 }), getUserById);
 
@@ -26,7 +30,7 @@ router.patch('/me', celebrate({
 
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().min(2).max(160),
+    avatar: Joi.string().min(2).max(160).pattern(validUrl),
   }),
 }), updateAvatar);
 

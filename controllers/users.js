@@ -18,7 +18,7 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
-  User.findById(req.params.id).orFail()
+  User.findById(req.params.id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Таких данных в базе нет');
@@ -26,6 +26,7 @@ module.exports.getUserById = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((err) => {
+      // console.dir(err);
       next(err);
     });
 };
