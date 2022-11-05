@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const IncorrrectUserError = require('../errores/errorincorrectuser');
 const NotValidError = require('../errores/errornotvalid');
+const NotFoundError = require('../errores/errornotfound');
 const ServerError = require('../errores/errorserver');
 
 module.exports.getAllCards = (req, res, next) => {
@@ -33,8 +34,11 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findById(req.params.id).orFail()
+  Card.findById(req.params.id)
     .then((card) => {
+      if (!card) {
+        throw new NotFoundError('Не удалилось');
+      }
       if (card.owner.toString() === req.user._id) {
         Card.findByIdAndRemove(req.params.id).orFail()
           .then(() => {
@@ -56,10 +60,10 @@ module.exports.putCardLike = (req, res, next) => {
     req.params.id,
     { $addToSet: { likes: owner } }, // добавить _id в массив, если его там нет
     { new: true },
-  ).orFail()
+  )
     .then((card) => {
       if (!card) {
-        throw new NotValidError('Не лайкнулось');
+        throw new NotFoundError('Не лайкнулось');
       }
       res.send({ data: card });
     })
@@ -75,10 +79,10 @@ module.exports.deleteCardLike = (req, res, next) => {
     req.params.id,
     { $pull: { likes: owner } }, // убрать _id из массива
     { new: true },
-  ).orFail()
+  )
     .then((card) => {
       if (!card) {
-        throw new NotValidError('Не лайкнулось');
+        throw new NotFoundError('Не разлайкнулось');
       }
       res.send({ data: card });
     })
