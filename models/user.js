@@ -7,24 +7,20 @@ function validationEmail(val) {
   return outValidator.isEmail(val);
 }
 
-/* function validationUrl(val) {
-  console.dir('111');
+function validationUrl(val) {
   return outValidator.isURL(val);
-} */
+}
 
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
     unique: true,
-    default: 'kusto@gmail.com',
     validate: validationEmail,
   },
   password: {
     type: String,
     required: true,
-    minlength: 8,
-    default: '88888888',
     select: false,
   },
   name: {
@@ -36,11 +32,13 @@ const userSchema = new mongoose.Schema({
   about: {
     type: String,
     default: 'Исследователь',
+    minlength: 2,
     maxlength: 30,
   },
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: validationUrl,
   },
 });
 
