@@ -1,15 +1,15 @@
 const Card = require('../models/card');
 const IncorrrectUserError = require('../errores/errorincorrectuser');
-const NotValidError = require('../errores/errornotvalid');
+// const NotValidError = require('../errores/errornotvalid');
 const NotFoundError = require('../errores/errornotfound');
 const ServerError = require('../errores/errorserver');
 
 module.exports.getAllCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
-      if (!cards) {
-        throw new ServerError('Ошибка сервера');
-      }
+      // if (!cards) {
+      // throw new ServerError('Ошибка сервера');
+      // }
       res.send({ data: cards });
     })
     .catch((err) => {
@@ -22,13 +22,14 @@ module.exports.createCard = (req, res, next) => {
   const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((card) => {
-      if (!card) {
-        throw new NotValidError('Невалидные данные');
-      }
+      // if (!card) {
+      //  throw new NotValidError('Невалидные данные');
+      // }
       res.send({ data: card });
     })
     .catch((err) => {
-      next(err);
+      // next(err);
+      throw new ServerError('Ошибка сервера');
     });
 };
 
@@ -36,12 +37,15 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.id)
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Не удалилось');
+        throw new NotFoundError('Карточка не нашлась. Удалить нельзя');
       }
       if (card.owner.toString() === req.user._id) {
         Card.findByIdAndRemove(req.params.id).orFail()
           .then(() => {
             res.send({ message: 'Удаление удалось!' });
+          })
+          .catch(() => {
+            throw new ServerError('Ошибка сервера');
           });
       } else {
         throw new IncorrrectUserError('Нет прав на удаление');
@@ -62,7 +66,7 @@ module.exports.putCardLike = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Не лайкнулось');
+        throw new NotFoundError('Карточка не нашлась. Поставить лайк нельзя');
       }
       res.send({ data: card });
     })
@@ -81,7 +85,7 @@ module.exports.deleteCardLike = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Не разлайкнулось');
+        throw new NotFoundError('Карточка не нашлась. Снять лайк нельзя');
       }
       res.send({ data: card });
     })
