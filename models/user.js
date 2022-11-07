@@ -44,11 +44,11 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByParams = function (email, password) {
+userSchema.statics.findUserByParams = function (email, password, next) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new NotLoginError('Неправильное имя пользователя или пароль');
+        throw new NotLoginError('Неправильное имя пользователя или пароль1');
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
@@ -57,7 +57,12 @@ userSchema.statics.findUserByParams = function (email, password) {
           }
           return user;
         });
-    });
+    })
+    // .catch((err) => {
+      // console.dir('1');
+      // console.dir(err);
+      // next(err);
+    // });
 };
 
 module.exports = mongoose.model('user', userSchema);

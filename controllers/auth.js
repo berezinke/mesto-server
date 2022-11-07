@@ -39,16 +39,16 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
-  User.findUserByParams(email, password).orFail()
+  User.findUserByParams(email, password, next)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'simpleKey', { expiresIn: '17d' });
       res.send({ token });
     })
-    .catch(() => {
-      throw new NotLoginError('Неправильное имя пользователя или пароль');
-      // next(err);
+    .catch((err) => {
+      // throw new NotLoginError('Неправильное имя пользователя или пароль');
+      next(err);
     });
 };
