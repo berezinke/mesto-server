@@ -17,7 +17,7 @@ module.exports.getAllCards = (req, res, next) => {
     });
 };
 
-module.exports.createCard = (req, res, next) => {
+module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
@@ -27,7 +27,7 @@ module.exports.createCard = (req, res, next) => {
       // }
       res.send({ data: card });
     })
-    .catch((err) => {
+    .catch(() => {
       // next(err);
       throw new ServerError('Ошибка сервера');
     });
