@@ -44,7 +44,6 @@ module.exports.getOwner = (req, res, next) => {
 module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
-    // eslint-disable-next-line no-underscore-dangle
     req.user._id,
     { name, about },
     { new: true, runValidators: true }, // Обн рез, валидация, создание если не найден
@@ -63,7 +62,6 @@ module.exports.updateUser = (req, res, next) => {
 module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
-    // eslint-disable-next-line no-underscore-dangle
     req.user._id,
     { avatar },
     { new: true, runValidators: true },
