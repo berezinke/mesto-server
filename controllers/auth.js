@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const NotLoginError = require('../errores/errornotlogin');
+// const NotLoginError = require('../errores/errornotlogin');
 const NotAllowedError = require('../errores/errornotallowed');
 const ServerError = require('../errores/errorserver');
 
