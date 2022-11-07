@@ -22,7 +22,13 @@ module.exports.createUser = (req, res, next) => {
           email, password: hash, name, about, avatar,
         })
           .then((user) => {
-            res.send(user);
+            res.send({
+              _id: user._id,
+              email: user.email,
+              name: user.name,
+              about: user.about,
+              avatar: user.avatar,
+            });
           })
           .catch(() => {
             throw new ServerError('Ошибка сервера');
@@ -36,7 +42,7 @@ module.exports.createUser = (req, res, next) => {
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
-  User.findUserByParams(email, password)
+  User.findUserByParams(email, password).orFail()
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'simpleKey', { expiresIn: '17d' });
       res.send({ token });
