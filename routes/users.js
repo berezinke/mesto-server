@@ -6,8 +6,7 @@ const {
 } = require('../controllers/users');
 
 const validMongoId = /^[0-9A-F]+/i;
-// eslint-disable-next-line no-useless-escape
-const validUrl = /(https?:\/\/[a-z0-9_\-\.]+[a-z]{2,9})(\/[a-z0-9_\-\.])*?/i;
+const validUrl = /(https?:\/\/[a-z0-9_\-.]+[a-z]{2,9})(\/[a-z0-9_\-.])*?/i;
 
 router.get('/', getUsers);
 
@@ -19,8 +18,6 @@ router.get('/:id', celebrate({
   }),
 }), getUserById);
 
-// router.post('/', createUser);
-
 router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
@@ -30,7 +27,7 @@ router.patch('/me', celebrate({
 
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().min(2).max(160).pattern(validUrl),
+    avatar: Joi.string().max(160).pattern(validUrl),
   }),
 }), updateAvatar);
 

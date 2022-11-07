@@ -1,8 +1,5 @@
-// const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-// const NotValidError = require('../errores/errornotvalid');
 const NotFoundError = require('../errores/errornotfound');
-// const ServerError = require('../errores/errorserver');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -23,7 +20,6 @@ module.exports.getUserById = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      // console.dir(err);
       next(err);
     });
 };

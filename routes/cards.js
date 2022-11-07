@@ -5,8 +5,7 @@ const {
   getAllCards, createCard, deleteCard, putCardLike, deleteCardLike,
 } = require('../controllers/cards');
 
-// eslint-disable-next-line no-useless-escape
-const validUrl = /(https?:\/\/[a-z0-9_\-\.]+[a-z]{2,9})(\/[a-z0-9_\-\.])*?/i;
+const validUrl = /(https?:\/\/[a-z0-9_\-.]+[a-z]{2,9})(\/[a-z0-9_\-.])*?/i;
 const validMongoId = /^[0-9A-F]+/i;
 
 router.get('/', getAllCards);
