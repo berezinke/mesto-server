@@ -1,15 +1,12 @@
 // const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const NotValidError = require('../errores/errornotvalid');
+// const NotValidError = require('../errores/errornotvalid');
 const NotFoundError = require('../errores/errornotfound');
-const ServerError = require('../errores/errorserver');
+// const ServerError = require('../errores/errorserver');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
-      if (!users) {
-        throw new ServerError('Ошибка сервера');
-      }
       res.send({ data: users });
     })
     .catch((err) => {
@@ -32,7 +29,7 @@ module.exports.getUserById = (req, res, next) => {
 };
 
 module.exports.getOwner = (req, res, next) => {
-  User.findById(req.user._id).orFail()
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Таких данных в базе нет');
@@ -51,10 +48,10 @@ module.exports.updateUser = (req, res, next) => {
     req.user._id,
     { name, about },
     { new: true, runValidators: true }, // Обн рез, валидация, создание если не найден
-  ).orFail()
+  )
     .then((user) => {
       if (!user) {
-        throw new NotValidError('Невалидные данные');
+        throw new NotFoundError('Пользователь не найден');
       }
       res.send({ data: user });
     })
@@ -70,10 +67,10 @@ module.exports.updateAvatar = (req, res, next) => {
     req.user._id,
     { avatar },
     { new: true, runValidators: true },
-  ).orFail()
+  )
     .then((user) => {
       if (!user) {
-        throw new NotValidError('Невалидные данные');
+        throw new NotFoundError('Пользователь не найден');
       }
       res.send({ data: user });
     })

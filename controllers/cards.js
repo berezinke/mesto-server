@@ -57,7 +57,6 @@ module.exports.deleteCard = (req, res, next) => {
 };
 
 module.exports.putCardLike = (req, res, next) => {
-  // eslint-disable-next-line no-underscore-dangle
   const owner = req.user._id;
   Card.findByIdAndUpdate(
     req.params.id,
@@ -76,7 +75,6 @@ module.exports.putCardLike = (req, res, next) => {
 };
 
 module.exports.deleteCardLike = (req, res, next) => {
-  // eslint-disable-next-line no-underscore-dangle
   const owner = req.user._id;
   Card.findByIdAndUpdate(
     req.params.id,
