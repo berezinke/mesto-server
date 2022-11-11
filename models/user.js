@@ -46,7 +46,7 @@ userSchema.statics.findUserByParams = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new NotLoginError('Неправильное имя пользователя или пароль1');
+        throw new NotLoginError('Неправильное имя пользователя или пароль!!!');
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
